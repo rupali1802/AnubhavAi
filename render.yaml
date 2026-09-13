@@ -1,3 +1,4 @@
+# sync-version: 1.0.1 - trigger rebuild with numpy and scikit-learn
 services:
   # ─── AnubhavAI Backend Web Service ──────────────────────────────
   - type: web
