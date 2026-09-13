@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DEBUG=False
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=gpt-4o-mini
+      - DATABASE_URL=postgresql://anubhavai_user:anubhav2024@db:5432/anubhavai
+      - SECRET_KEY=anubhavai-secret-key-change-in-production-2024
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=anubhav2024
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: anubhavai
+      POSTGRES_USER: anubhavai_user
+      POSTGRES_PASSWORD: anubhav2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U anubhavai_user -d anubhavai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5173"
 
     # Database
+    DATABASE_URL_OVERRIDE: str = ""
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
     MYSQL_DATABASE: str = "anubhavai"
@@ -19,6 +20,11 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
+        env_url = os.environ.get("DATABASE_URL") or self.DATABASE_URL_OVERRIDE
+        if env_url:
+            if env_url.startswith("postgres://"):
+                env_url = env_url.replace("postgres://", "postgresql://", 1)
+            return env_url
         pwd = urllib.parse.quote_plus(self.MYSQL_PASSWORD)
         return (
             f"mysql+pymysql://{self.MYSQL_USER}:{pwd}"
