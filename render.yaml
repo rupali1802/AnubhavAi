@@ -18,11 +18,6 @@ services:
         value: gpt-4o-mini
       - key: SECRET_KEY
         generateValue: true
-      - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: anubhavai-frontend
-          property: host
       - key: DATABASE_URL
         fromDatabase:
           name: anubhavai-db
@@ -32,8 +27,6 @@ services:
   - type: web
     name: anubhavai-frontend
     runtime: static
-    plan: free
-    region: oregon
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
